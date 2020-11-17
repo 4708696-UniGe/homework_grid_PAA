@@ -1,2 +1,0 @@
-ERROR - 01:18:43: org.xml.sax.SAXParseExceptionpublicId: /homework/src/homework/Main.java; systemId: file:///homework/src/homework/Main.java; lineNumber: 1; columnNumber: 1; Content is not allowed in prolog.
-ERROR - 01:18:43: org.xml.sax.SAXParseExceptionpublicId: /homework/src/homework/Main.java; systemId: file:///homework/src/homework/Main.java; lineNumber: 1; columnNumber: 1; Content is not allowed in prolog.
