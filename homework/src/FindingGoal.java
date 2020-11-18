@@ -155,52 +155,54 @@ public class FindingGoal {
 				DEADEND = true;
 			}
 		}
-		if (DEADEND == true) {
-			GoBack();
-		}
 	}
 	
 	// Go back after dead ends detection
 	public void GoBack() {
 		if (SOUTH == true) {
-			
+			grid.moveToAdjacentCell(GridWorld.Direction.NORTH);
+			NORTH = true;
 		}
 		if (EAST == true) {
-			
+			grid.moveToAdjacentCell(GridWorld.Direction.WEST);
+			WEST = true;
 		}
 		if (NORTH == true) {
-			
+			grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
+			SOUTH = true;
 		}
 		if (WEST == true) {
-			
+			grid.moveToAdjacentCell(GridWorld.Direction.EAST);
+			EAST = true;
 		}
 	}
 	
 	
 	public void searchGoal() {
 		
-		GetAndConvertCurrentRobotCoordinates();
-		
 		// Shows minimum step needed for reach target
 		System.out.println("Minimum step needed: "+minimumStep);
 		
-		// Print initial robot position
-		//System.out.print("("+X_robotPosition+",");
-		//System.out.print(" "+Y_robotPosition+"), ");
-		
-		// 
-		
+		// Algorithm for finding target
 discover:	while (grid.targetReached() == false) {
-				GetAndConvertCurrentRobotCoordinates();
 				//DetectDeadEnds();
+				GetAndConvertCurrentRobotCoordinates();
 				GetAndConvertAdjacentFreeCells();
 				GiveChoicePriorities();
+				
 				ChoiceDirection();
+				
 				System.out.print("("+X_robotPosition+",");
 				System.out.print(" "+Y_robotPosition+")");
 				System.out.print(" ");
 			
-				
+				if (DEADEND == true) {
+					GoBack();
+					System.out.print("("+X_robotPosition+",");
+					System.out.print(" "+Y_robotPosition+")");
+					System.out.print(" ");
+					ChoiceDirection();
+				}
 				if (SOUTH == true) {
 					grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
 					actualStep++;
@@ -225,7 +227,6 @@ discover:	while (grid.targetReached() == false) {
 				else if (WEST == true) {
 					grid.moveToAdjacentCell(GridWorld.Direction.WEST);
 					actualStep++;
-					//continue discover;
 					break;
 				}
 				
