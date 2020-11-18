@@ -72,11 +72,21 @@ public class FindingGoal {
 					Swap(Y_freeCellsCoordinates, j, j+1);
 					continue sort;
 				}
-				if (j != (Y_freeCellsCoordinates.length - 1) && Y_freeCellsCoordinates[j] < Y_freeCellsCoordinates[j+1]) {
+				else if (j != (Y_freeCellsCoordinates.length - 1) && Y_freeCellsCoordinates[j] < Y_freeCellsCoordinates[j+1]) {
 					Swap(X_freeCellsCoordinates, j, j+1);
 					Swap(Y_freeCellsCoordinates, j, j+1); 
 					continue sort;
 				}
+				/*else if (j != (Y_freeCellsCoordinates.length - 1) && X_freeCellsCoordinates[j] > X_freeCellsCoordinates[j+1]) {
+					Swap(X_freeCellsCoordinates, j, j+1);
+					Swap(Y_freeCellsCoordinates, j, j+1); 
+					continue sort;
+				}
+				else if (j != (Y_freeCellsCoordinates.length - 1) && Y_freeCellsCoordinates[j] > Y_freeCellsCoordinates[j+1]) {
+					Swap(X_freeCellsCoordinates, j, j+1);
+					Swap(Y_freeCellsCoordinates, j, j+1); 
+					continue sort;
+				}*/
 			}
 		}
 	}
@@ -101,7 +111,7 @@ discover:	while (grid.targetReached() == false) {
 				GiveChoicePriorities();
 			
 				
-				if (X_freeCellsCoordinates[0] > X_robotPosition) {
+		SOUTH:	if (X_freeCellsCoordinates[0] > X_robotPosition) {
 					grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
 					GetAndConvertCurrentRobotCoordinates();
 					GetAndConvertAdjacentFreeCells();
@@ -109,19 +119,10 @@ discover:	while (grid.targetReached() == false) {
 					System.out.print("("+X_robotPosition+",");
 					System.out.print(" "+Y_robotPosition+"), ");
 					actualStep++;
-					/*for (int i = 0; i < X_freeCellsCoordinates.length && X_freeCellsCoordinates[i] > X_robotPosition; i++) {
-						GetAndConvertCurrentRobotCoordinates();
-						GetAndConvertAdjacentFreeCells();
-						GiveChoicePriorities();
-						grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
-						System.out.print("("+X_robotPosition+",");
-						System.out.print(" "+Y_robotPosition+"), ");
-						actualStep++;
-					}*/
-					//continue discover;
+					break SOUTH;
 				}
 				
-				if (Y_freeCellsCoordinates[0] > Y_robotPosition) {
+		 EAST:	 if (Y_freeCellsCoordinates[0] > Y_robotPosition) {
 					grid.moveToAdjacentCell(GridWorld.Direction.EAST);
 					GetAndConvertCurrentRobotCoordinates();
 					GetAndConvertAdjacentFreeCells(); 
@@ -129,19 +130,15 @@ discover:	while (grid.targetReached() == false) {
 					System.out.print("("+X_robotPosition+",");
 					System.out.print(" "+Y_robotPosition+"), ");
 					actualStep++;
-					/*for (int i = 0; i < X_freeCellsCoordinates.length && Y_freeCellsCoordinates[i] > Y_robotPosition; i++) {
-						GetAndConvertCurrentRobotCoordinates();
-						GetAndConvertAdjacentFreeCells();
-						GiveChoicePriorities();
-						grid.moveToAdjacentCell(GridWorld.Direction.EAST);
-						System.out.print("("+X_robotPosition+",");
-						System.out.print(" "+Y_robotPosition+"), ");
-					}*/
-					//continue discover;
+					if (X_freeCellsCoordinates[0] > X_robotPosition) {
+						continue discover;
+					}
+						else if (Y_freeCellsCoordinates[0] > Y_robotPosition) {
+							break EAST;
+						}
 				}
 				
-				
-				if (X_freeCellsCoordinates[0] < X_robotPosition) {
+		 else if (X_freeCellsCoordinates[1] < X_robotPosition) {
 					grid.moveToAdjacentCell(GridWorld.Direction.NORTH);
 					GetAndConvertCurrentRobotCoordinates();
 					GetAndConvertAdjacentFreeCells();
@@ -149,13 +146,58 @@ discover:	while (grid.targetReached() == false) {
 					System.out.print("("+X_robotPosition+",");
 					System.out.print(" "+Y_robotPosition+"), ");
 					actualStep++;
-					/*for (int i = 0;i < X_freeCellsCoordinates.length && X_freeCellsCoordinates[i] < X_robotPosition; i++) {
+					break discover;
+					}
+				
+		 else if (Y_freeCellsCoordinates[1] < Y_robotPosition) {
+					grid.moveToAdjacentCell(GridWorld.Direction.WEST);
+					GetAndConvertCurrentRobotCoordinates();
+					GetAndConvertAdjacentFreeCells();
+					GiveChoicePriorities();
+					System.out.print("("+X_robotPosition+",");
+					System.out.print(" "+Y_robotPosition+"), ");
+					actualStep++;
+					break discover;
+					}
+				for(int k = 0; k < 10000; k++) {
+				System.out.print("("+X_robotPosition+",");
+				System.out.print(" "+Y_robotPosition+"), ");
+				}
+				/*for (int j = 0; j < X_freeCellsCoordinates.length; ) {	
+					System.out.println("TEST");
+					if (X_freeCellsCoordinates[j] < X_robotPosition) {
 						grid.moveToAdjacentCell(GridWorld.Direction.NORTH);
+						GetAndConvertCurrentRobotCoordinates();
+						GetAndConvertAdjacentFreeCells();
+						GiveChoicePriorities();
 						System.out.print("("+X_robotPosition+",");
 						System.out.print(" "+Y_robotPosition+"), ");
-					}*/
-					//continue discover;
+						actualStep++;
+					}
+					j++;
+						//continue discover;
 				}
+				
+				/*for (int j = 0; j < X_freeCellsCoordinates.length; j++) {	
+					if (X_freeCellsCoordinates[j] < X_robotPosition) {
+						grid.moveToAdjacentCell(GridWorld.Direction.WEST);
+						GetAndConvertCurrentRobotCoordinates();
+						GetAndConvertAdjacentFreeCells();
+						GiveChoicePriorities();
+						System.out.print("("+X_robotPosition+",");
+						System.out.print(" "+Y_robotPosition+"), ");
+						actualStep++;
+						continue discover;
+					}
+				}/*
+						
+						/*for (int i = 0;i < X_freeCellsCoordinates.length && X_freeCellsCoordinates[i] < X_robotPosition; i++) {
+							grid.moveToAdjacentCell(GridWorld.Direction.NORTH);
+							System.out.print("("+X_robotPosition+",");
+							System.out.print(" "+Y_robotPosition+"), ");
+						}
+						//continue discover;
+					}
 				
 				
 				if (Y_freeCellsCoordinates[0] < Y_robotPosition) {
@@ -170,9 +212,10 @@ discover:	while (grid.targetReached() == false) {
 						grid.moveToAdjacentCell(GridWorld.Direction.WEST);
 						System.out.print("("+X_robotPosition+",");
 						System.out.print(" "+Y_robotPosition+"), ");
-					}*/
-					//continue discover;
+					}
+					continue discover;
 				}
+				*/
 		}
 		
 		System.out.println("Step made: "+actualStep);
