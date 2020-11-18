@@ -13,7 +13,7 @@ public class FindingGoal {
 	private boolean EAST;
 	private boolean NORTH;
 	private boolean WEST;
-	private boolean DEADEND;
+	private boolean IMPASSE;
 	
 	public FindingGoal(GridWorld grid) {
 		this.actualStep = 0;
@@ -128,36 +128,36 @@ public class FindingGoal {
 		}
 	}
 	
-	// Report dead ends if the only free adjacent cell is where it came from and call method GoBack
-	public void DetectDeadEnds() {
-		DEADEND = false;
+	// Report impasse if the only free adjacent cell is where it came from and call method GoBack
+	public void DetectImpasse() {
+		IMPASSE = false;
 		if (SOUTH == true) {
 			ChoiceDirection();
 			if (EAST == false && NORTH == false && WEST == false) {
-				DEADEND = true;
+				IMPASSE = true;
 			}
 		}
 		if (EAST == true) {
 			ChoiceDirection();
 			if (SOUTH == false && NORTH == false && WEST == false) {
-				DEADEND = true;
+				IMPASSE = true;
 			}
 		}
 		if (NORTH == true) {
 			ChoiceDirection();
 			if (SOUTH == false && EAST == false && WEST == false) {
-				DEADEND = true;
+				IMPASSE = true;
 			}
 		}
 		if (WEST == true) {
 			ChoiceDirection();
 			if (SOUTH == false && EAST == false && NORTH == false) {
-				DEADEND = true;
+				IMPASSE = true;
 			}
 		}
 	}
 	
-	// Go back after dead ends detection
+	// Go back after impasse detection
 	public void GoBack() {
 		if (SOUTH == true) {
 			grid.moveToAdjacentCell(GridWorld.Direction.NORTH);
@@ -185,7 +185,7 @@ public class FindingGoal {
 		
 		// Algorithm for finding target
 discover:	while (grid.targetReached() == false) {
-				//DetectDeadEnds();
+				//DetectImpasse();
 				GetAndConvertCurrentRobotCoordinates();
 				GetAndConvertAdjacentFreeCells();
 				GiveChoicePriorities();
@@ -196,7 +196,7 @@ discover:	while (grid.targetReached() == false) {
 				System.out.print(" "+Y_robotPosition+")");
 				System.out.print(" ");
 			
-				if (DEADEND == true) {
+				if (IMPASSE == true) {
 					GoBack();
 					System.out.print("("+X_robotPosition+",");
 					System.out.print(" "+Y_robotPosition+")");
