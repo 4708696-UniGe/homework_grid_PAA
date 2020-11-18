@@ -13,6 +13,7 @@ public class FindingGoal {
 	private boolean EAST;
 	private boolean NORTH;
 	private boolean WEST;
+	private boolean DEADEND;
 	
 	public FindingGoal(GridWorld grid) {
 		this.actualStep = 0;
@@ -96,28 +97,28 @@ public class FindingGoal {
 	// Scan free adjacent free cells and select the best direction 
 	public void ChoiceDirection() {
 		for (int j = 0; j < X_freeCellsCoordinates.length; j++) {
-			if (X_freeCellsCoordinates[j] > X_robotPosition) {
+			if (X_freeCellsCoordinates[j] > X_robotPosition && NORTH != true) {
 				SOUTH = true;
 				EAST = false;
 				NORTH = false;
 				WEST = false;
 				break;
 			}
-			else if (Y_freeCellsCoordinates[j] > Y_robotPosition) {
+			else if (Y_freeCellsCoordinates[j] > Y_robotPosition && WEST != true) {
 				SOUTH = false;
 				EAST = true;
 				NORTH = false;
 				WEST = false;
 				break;
 			}
-			else if (X_freeCellsCoordinates[j] < X_robotPosition) {
+			else if (X_freeCellsCoordinates[j] < X_robotPosition && SOUTH != true) {
 				SOUTH = false;
 				EAST = false;
 				NORTH = true;
 				WEST = false;
 				break;
 			}
-			else if (Y_freeCellsCoordinates[j] < Y_robotPosition) {
+			else if (Y_freeCellsCoordinates[j] < Y_robotPosition && EAST != true) {
 				SOUTH = false;
 				EAST = false;
 				NORTH = false;
@@ -127,9 +128,54 @@ public class FindingGoal {
 		}
 	}
 	
-	/*public void DetectDeadEnds() {
-		
-	}*/
+	// Report dead ends if the only free adjacent cell is where it came from and call method GoBack
+	public void DetectDeadEnds() {
+		DEADEND = false;
+		if (SOUTH == true) {
+			ChoiceDirection();
+			if (EAST == false && NORTH == false && WEST == false) {
+				DEADEND = true;
+			}
+		}
+		if (EAST == true) {
+			ChoiceDirection();
+			if (SOUTH == false && NORTH == false && WEST == false) {
+				DEADEND = true;
+			}
+		}
+		if (NORTH == true) {
+			ChoiceDirection();
+			if (SOUTH == false && EAST == false && WEST == false) {
+				DEADEND = true;
+			}
+		}
+		if (WEST == true) {
+			ChoiceDirection();
+			if (SOUTH == false && EAST == false && NORTH == false) {
+				DEADEND = true;
+			}
+		}
+		if (DEADEND == true) {
+			GoBack();
+		}
+	}
+	
+	// Go back after dead ends detection
+	public void GoBack() {
+		if (SOUTH == true) {
+			
+		}
+		if (EAST == true) {
+			
+		}
+		if (NORTH == true) {
+			
+		}
+		if (WEST == true) {
+			
+		}
+	}
+	
 	
 	public void searchGoal() {
 		
@@ -146,6 +192,7 @@ public class FindingGoal {
 		
 discover:	while (grid.targetReached() == false) {
 				GetAndConvertCurrentRobotCoordinates();
+				//DetectDeadEnds();
 				GetAndConvertAdjacentFreeCells();
 				GiveChoicePriorities();
 				ChoiceDirection();
