@@ -21,7 +21,9 @@ public class Main {
 		grid.print();
 		
 		FindingGoal hunt = new FindingGoal(grid);
+		
 		hunt.searchGoal();
+		
 		
 		/*System.out.println(grid.getMinimumDistanceToTarget());
 		
@@ -38,6 +40,10 @@ public class Main {
 		grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
 		grid.moveToAdjacentCell(GridWorld.Direction.EAST);
 		System.out.println(grid.getAdjacentFreeCells());
+		
+		grid.moveToAdjacentCell(GridWorld.Direction.EAST);
+		grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
+		grid.moveToAdjacentCell(GridWorld.Direction.EAST);
 		*/
 	}
 
