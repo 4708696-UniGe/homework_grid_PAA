@@ -14,6 +14,7 @@ public class FindingGoal {
 	private boolean NORTH;
 	private boolean WEST;
 	private boolean IMPASSE;
+	private String prevDirection;
 	
 	public FindingGoal(GridWorld grid) {
 		this.actualStep = 0;
@@ -38,25 +39,29 @@ public class FindingGoal {
 	// 			(Y coordinate)		Y	  2		  1		  2		  3
 	// Adjacent free cells : [(2,2)] , (1,1) , (0,2) , (1,3)]
 	public void GetAndConvertAdjacentFreeCells() {
-		String conversion = grid.getAdjacentFreeCells().toString();
-		String[] parts = conversion.split("[|(|,|)||]");
+		Iterator its = getAdjacentFreeCells();
+		System.out.print("x_c:"+X_freeCellsCoordinates[0]+" ");
+		/*String conversion = grid.getAdjacentFreeCells().toString();
+		String[] parts = conversion.split("[|(|,|)|]");
 		int j = 0;
 		for (int i = 1; i < parts.length; i++) {
-			if (i == 3 || i == 7 || i == 11) {
+			if (i == 3 || i == 6 || i == 9) {
 				i = i+2;
 			}
 			if (i >= parts.length) {
 				break;
 			}
 			X_freeCellsCoordinates[j] = Integer.parseInt(parts[i]);
+			System.out.print("x_c:"+X_freeCellsCoordinates[j]+" ");
 			i++;
 			Y_freeCellsCoordinates[j] = Integer.parseInt(parts[i]);
+			System.out.println("y_c:"+Y_freeCellsCoordinates[j]);
 			j++;
 			
-			if (i == 14) {
+			if (i == 13) {
 				i++;
 			}
-		}
+		}*/
 		
 	}
 	
@@ -97,28 +102,28 @@ public class FindingGoal {
 	// Scan free adjacent free cells and select the best direction 
 	public void ChoiceDirection() {
 		for (int j = 0; j < X_freeCellsCoordinates.length; j++) {
-			if (X_freeCellsCoordinates[j] > X_robotPosition && NORTH != true) {
+			if (X_freeCellsCoordinates[j] > X_robotPosition && (prevDirection != "NORTH" || IMPASSE == true)) {
 				SOUTH = true;
 				EAST = false;
 				NORTH = false;
 				WEST = false;
 				break;
 			}
-			else if (Y_freeCellsCoordinates[j] > Y_robotPosition && WEST != true) {
+			else if (Y_freeCellsCoordinates[j] > Y_robotPosition && (prevDirection != "WEST" || IMPASSE == true)) {
 				SOUTH = false;
 				EAST = true;
 				NORTH = false;
 				WEST = false;
 				break;
 			}
-			else if (X_freeCellsCoordinates[j] < X_robotPosition && SOUTH != true) {
+			else if (X_freeCellsCoordinates[j] < X_robotPosition && (prevDirection != "SOUTH" || IMPASSE == true)) {
 				SOUTH = false;
 				EAST = false;
 				NORTH = true;
 				WEST = false;
 				break;
 			}
-			else if (Y_freeCellsCoordinates[j] < Y_robotPosition && EAST != true) {
+			else if (Y_freeCellsCoordinates[j] < Y_robotPosition && (prevDirection != "EAST" || IMPASSE == true)) {
 				SOUTH = false;
 				EAST = false;
 				NORTH = false;
@@ -131,27 +136,60 @@ public class FindingGoal {
 	// Report impasse if the only free adjacent cell is where it came from and call method GoBack
 	public void DetectImpasse() {
 		IMPASSE = false;
-		if (SOUTH == true) {
-			ChoiceDirection();
-			if (EAST == false && NORTH == false && WEST == false) {
+		if (prevDirection == "SOUTH") {
+			for (int j = 0; j < X_freeCellsCoordinates.length; j++) {
+				if (X_freeCellsCoordinates[j] > X_robotPosition) {
+					break;
+				}
+				else if (Y_freeCellsCoordinates[j] > Y_robotPosition) {
+					break;
+				}
+				else if (Y_freeCellsCoordinates[j] < Y_robotPosition) {
+					break;
+				}
 				IMPASSE = true;
 			}
 		}
-		if (EAST == true) {
-			ChoiceDirection();
-			if (SOUTH == false && NORTH == false && WEST == false) {
+		if (prevDirection == "EAST") {
+			for (int j = 0; j < X_freeCellsCoordinates.length; j++) {
+				//System.out.println("x_c:"+Y_freeCellsCoordinates[j]);
+				if (X_freeCellsCoordinates[j] > X_robotPosition) {
+					break;
+				}
+				else if (Y_freeCellsCoordinates[j] > Y_robotPosition) {
+					break;
+				}
+				else if (X_freeCellsCoordinates[j] < X_robotPosition) {
+					break;
+				}
 				IMPASSE = true;
 			}
 		}
-		if (NORTH == true) {
-			ChoiceDirection();
-			if (SOUTH == false && EAST == false && WEST == false) {
+		if (prevDirection == "NORTH") {
+			for (int j = 0; j < X_freeCellsCoordinates.length; j++) {
+				if (Y_freeCellsCoordinates[j] > Y_robotPosition) {
+					break;
+				}
+				else if (X_freeCellsCoordinates[j] < X_robotPosition) {
+					break;
+				}
+				else if (Y_freeCellsCoordinates[j] < Y_robotPosition) {
+					break;
+				}
 				IMPASSE = true;
 			}
 		}
-		if (WEST == true) {
-			ChoiceDirection();
-			if (SOUTH == false && EAST == false && NORTH == false) {
+		if (prevDirection == "WEST") {
+			for (int j = 0; j < X_freeCellsCoordinates.length; j++) {
+				if (X_freeCellsCoordinates[j] > X_robotPosition) {
+					break;
+				}
+				else if (X_freeCellsCoordinates[j] < X_robotPosition) {
+					break;
+				}
+				else if (Y_freeCellsCoordinates[j] < Y_robotPosition) {
+					break;
+				}
 				IMPASSE = true;
 			}
 		}
@@ -159,19 +197,19 @@ public class FindingGoal {
 	
 	// Go back after impasse detection
 	public void GoBack() {
-		if (SOUTH == true) {
+		if (prevDirection == "SOUTH") {
 			grid.moveToAdjacentCell(GridWorld.Direction.NORTH);
 			NORTH = true;
 		}
-		if (EAST == true) {
+		if (prevDirection == "EAST") {
 			grid.moveToAdjacentCell(GridWorld.Direction.WEST);
 			WEST = true;
 		}
-		if (NORTH == true) {
+		if (prevDirection == "NORD") {
 			grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
 			SOUTH = true;
 		}
-		if (WEST == true) {
+		if (prevDirection == "WEST") {
 			grid.moveToAdjacentCell(GridWorld.Direction.EAST);
 			EAST = true;
 		}
@@ -185,25 +223,29 @@ public class FindingGoal {
 		
 		// Algorithm for finding target
 discover:	while (grid.targetReached() == false) {
-				//DetectImpasse();
+				
 				GetAndConvertCurrentRobotCoordinates();
 				GetAndConvertAdjacentFreeCells();
 				GiveChoicePriorities();
-				
 				ChoiceDirection();
+				DetectImpasse();
 				
 				System.out.print("("+X_robotPosition+",");
 				System.out.print(" "+Y_robotPosition+")");
-				System.out.print(" ");
+				System.out.println(" ");
 			
 				if (IMPASSE == true) {
 					GoBack();
+					GetAndConvertCurrentRobotCoordinates();
 					System.out.print("("+X_robotPosition+",");
 					System.out.print(" "+Y_robotPosition+")");
 					System.out.print(" ");
-					ChoiceDirection();
+					actualStep++;
+					//continue discover;
+					break;
 				}
 				if (SOUTH == true) {
+					prevDirection = "SOUTH";
 					grid.moveToAdjacentCell(GridWorld.Direction.SOUTH);
 					actualStep++;
 					continue discover;
@@ -211,6 +253,7 @@ discover:	while (grid.targetReached() == false) {
 				}
 				
 				else if (EAST == true) {
+					prevDirection = "EAST";
 					grid.moveToAdjacentCell(GridWorld.Direction.EAST);
 					actualStep++;
 					continue discover;
@@ -218,6 +261,7 @@ discover:	while (grid.targetReached() == false) {
 				}
 				
 				else if (NORTH == true) {
+					prevDirection = "NORTH";
 					grid.moveToAdjacentCell(GridWorld.Direction.NORTH);
 					actualStep++;
 					continue discover;
@@ -225,9 +269,10 @@ discover:	while (grid.targetReached() == false) {
 				}
 				
 				else if (WEST == true) {
+					prevDirection = "WEST";
 					grid.moveToAdjacentCell(GridWorld.Direction.WEST);
 					actualStep++;
-					break;
+					//break;
 				}
 				
 				
